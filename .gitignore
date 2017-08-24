@@ -3,3 +3,5 @@
 transformer.iml
 src/test/
 target/
+out/
+src/main/java/META-INF/
