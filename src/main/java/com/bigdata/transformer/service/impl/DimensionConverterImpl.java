@@ -1,16 +1,12 @@
 package com.bigdata.transformer.service.impl;
 
-import com.bigdata.transformer.model.dim.base.BaseDimension;
-import com.bigdata.transformer.model.dim.base.BrowserDimension;
-import com.bigdata.transformer.model.dim.base.DateDimension;
-import com.bigdata.transformer.model.dim.base.PlatformDimension;
+import com.bigdata.transformer.model.dim.base.*;
 import com.bigdata.transformer.service.IDimensionConverter;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -23,15 +19,19 @@ import java.util.Map;
 public class DimensionConverterImpl implements IDimensionConverter {
     private static final Logger LOGGER = Logger.getLogger(DimensionConverterImpl.class);
     private static final String DRIVER = "com.mysql.jdbc.Driver";
-    private static String URL = "jdbc:mysql://hadoop-senior.ibeifeng.com:3306/mysql";
+    private static String URL = "jdbc:mysql://hadoop-senior.ibeifeng.com:3306/report";
     private static String USERNAME = "root";
     private static String PASSWORD = "123456";
     private Map<String, Integer> cache = new LinkedHashMap<String, Integer>() {
-        @Override
+        private static final long serialVersionUID = 8894507016522723685L;
+
         protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
             return this.size() > 5000;
         }
+
+        ;
     };
+
     static {
         try {
             Class.forName(DRIVER);
@@ -58,6 +58,8 @@ public class DimensionConverterImpl implements IDimensionConverter {
                 sql = this.buildPlatformSql();
             } else if (dimension instanceof BrowserDimension) {
                 sql = this.buildBrowserSql();
+            } else if (dimension instanceof KpiDimension) {
+                sql = this.buildKpiSql();
             } else {
                 throw new IOException("不支持此dimensionid的获取:" + dimension.getClass());
             }
@@ -113,6 +115,10 @@ public class DimensionConverterImpl implements IDimensionConverter {
             sb.append("browser_dimension");
             BrowserDimension browser = (BrowserDimension) dimension;
             sb.append(browser.getBrowserName()).append(browser.getBrowserVersion());
+        } else if (dimension instanceof KpiDimension) {
+            sb.append("kpi_dimension");
+            KpiDimension kpi = (KpiDimension) dimension;
+            sb.append(kpi.getKpiName());
         }
 
         if (sb.length() == 0) {
@@ -146,6 +152,9 @@ public class DimensionConverterImpl implements IDimensionConverter {
             BrowserDimension browser = (BrowserDimension) dimension;
             pstmt.setString(++i, browser.getBrowserName());
             pstmt.setString(++i, browser.getBrowserVersion());
+        } else if (dimension instanceof KpiDimension) {
+            KpiDimension kpi = (KpiDimension) dimension;
+            pstmt.setString(++i, kpi.getKpiName());
         }
     }
 
@@ -157,7 +166,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildDateSql() {
         String querySql = "SELECT `id` FROM `dimension_date` WHERE `year` = ? AND `season` = ? AND `month` = ? AND `week` = ? AND `day` = ? AND `type` = ? AND `calendar` = ?";
         String insertSql = "INSERT INTO `dimension_date`(`year`, `season`, `month`, `week`, `day`, `type`, `calendar`) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        return new String[] { querySql, insertSql };
+        return new String[]{querySql, insertSql};
     }
 
     /**
@@ -168,7 +177,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildPlatformSql() {
         String querySql = "SELECT `id` FROM `dimension_platform` WHERE `platform_name` = ?";
         String insertSql = "INSERT INTO `dimension_platform`(`platform_name`) VALUES(?)";
-        return new String[] { querySql, insertSql };
+        return new String[]{querySql, insertSql};
     }
 
     /**
@@ -179,8 +188,20 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildBrowserSql() {
         String querySql = "SELECT `id` FROM `dimension_browser` WHERE `browser_name` = ? AND `browser_version` = ?";
         String insertSql = "INSERT INTO `dimension_browser`(`browser_name`, `browser_version`) VALUES(?, ?)";
-        return new String[] { querySql, insertSql };
+        return new String[]{querySql, insertSql};
     }
+
+    /**
+     * 创建kpi dimension相关sql
+     *
+     * @return
+     */
+    private String[] buildKpiSql() {
+        String querySql = "SELECT `id` FROM `dimension_kpi` WHERE `kpi_name` = ?";
+        String insertSql = "INSERT INTO `dimension_kpi`(`kpi_name`) VALUES(?)";
+        return new String[]{querySql, insertSql};
+    }
+
 
     /**
      * 具体执行sql的方法

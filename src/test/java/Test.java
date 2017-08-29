@@ -1,7 +1,4 @@
 import com.bigdata.etl.util.IPSeekerExt;
-import com.bigdata.etl.util.LoggerUtil;
-import com.bigdata.etl.util.UserAgentUtil;
-import com.bigdata.etl.util.ip.IPSeeker;
 
 /**
  * @Package PACKAGE_NAME

@@ -1,7 +1,6 @@
 package com.bigdata.util;
 
 import com.bigdata.common.DateEnum;
-import org.apache.commons.beanutils.locale.converters.DoubleLocaleConverter;
 import org.apache.commons.lang.StringUtils;
 
 import java.text.ParseException;
@@ -125,7 +124,7 @@ public class TimeUtil {
             case DAY:
                 return calendar.get(Calendar.DAY_OF_MONTH);
             case HOUR:
-                calendar.get(Calendar.HOUR_OF_DAY);
+                return  calendar.get(Calendar.HOUR_OF_DAY);
             case WEEK:
                 return calendar.get(Calendar.WEEK_OF_YEAR);
             case YEAR:

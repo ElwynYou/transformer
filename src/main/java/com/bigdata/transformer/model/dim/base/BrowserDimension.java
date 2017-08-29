@@ -2,7 +2,6 @@ package com.bigdata.transformer.model.dim.base;
 
 import com.bigdata.common.GlobalConstants;
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -45,7 +44,7 @@ public class BrowserDimension extends BaseDimension {
      * @return
      */
     public static List<BrowserDimension> buildList(String browserName, String browserVersion) {
-        List<BaseDimension> list = new ArrayList<>();
+        List<BrowserDimension> list = new ArrayList<>();
         if (StringUtils.isBlank(browserName)) {
             //浏览器名称为空,设置为unknow
             browserName = GlobalConstants.DEFAULT_VALUE;
@@ -57,7 +56,7 @@ public class BrowserDimension extends BaseDimension {
         //list.add(BrowserDimension.newInstance(GlobalConstants.VALUE_OF_ALL,GlobalConstants.VALUE_OF_ALL));
         list.add(BrowserDimension.newInstance(browserName, GlobalConstants.VALUE_OF_ALL));
         list.add(BrowserDimension.newInstance(browserName, browserVersion));
-        return null;
+        return list;
     }
 
     @Override

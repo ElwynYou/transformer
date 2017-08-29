@@ -28,7 +28,7 @@ public class GlobalConstants {
     /**
      * 指定连接表配置为report
      */
-    public static final String WAREHOUSE_OF_REPORT = "mysql";
+    public static final String WAREHOUSE_OF_REPORT = "report";
     /**
      * 批量执行的key
      */
