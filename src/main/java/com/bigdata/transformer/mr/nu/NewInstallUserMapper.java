@@ -35,7 +35,7 @@ public class NewInstallUserMapper extends TransformerBaseMapper<StatsUserDimensi
     protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
        this.inputRecords++;
         String uuid = super.getUuid(value);
-        String serverTime = super.getSeverTime(value);
+        String serverTime = super.getServerTime(value);
         String platform = super.getPlatform(value);
         if (StringUtils.isBlank(uuid) || StringUtils.isBlank(serverTime) || StringUtils.isBlank(platform)) {
             logger.warn("uuid&servertime&platform不能为空");

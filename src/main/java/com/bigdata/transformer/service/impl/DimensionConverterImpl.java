@@ -27,9 +27,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
 
         protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
             return this.size() > 5000;
-        }
-
-        ;
+        };
     };
 
     static {
@@ -60,6 +58,8 @@ public class DimensionConverterImpl implements IDimensionConverter {
                 sql = this.buildBrowserSql();
             } else if (dimension instanceof KpiDimension) {
                 sql = this.buildKpiSql();
+            } else if (dimension instanceof LocationDimension) {
+                sql = this.buildLocationSql();
             } else {
                 throw new IOException("不支持此dimensionid的获取:" + dimension.getClass());
             }
@@ -119,6 +119,10 @@ public class DimensionConverterImpl implements IDimensionConverter {
             sb.append("kpi_dimension");
             KpiDimension kpi = (KpiDimension) dimension;
             sb.append(kpi.getKpiName());
+        } else if (dimension instanceof LocationDimension) {
+            sb.append("location_dimension");
+            LocationDimension location = (LocationDimension) dimension;
+            sb.append(location.getCountry()).append(location.getProvince()).append(location.getCity());
         }
 
         if (sb.length() == 0) {
@@ -155,6 +159,11 @@ public class DimensionConverterImpl implements IDimensionConverter {
         } else if (dimension instanceof KpiDimension) {
             KpiDimension kpi = (KpiDimension) dimension;
             pstmt.setString(++i, kpi.getKpiName());
+        } else if (dimension instanceof LocationDimension) {
+            LocationDimension location = (LocationDimension) dimension;
+            pstmt.setString(++i, location.getCountry());
+            pstmt.setString(++i, location.getProvince());
+            pstmt.setString(++i, location.getCity());
         }
     }
 
@@ -166,7 +175,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildDateSql() {
         String querySql = "SELECT `id` FROM `dimension_date` WHERE `year` = ? AND `season` = ? AND `month` = ? AND `week` = ? AND `day` = ? AND `type` = ? AND `calendar` = ?";
         String insertSql = "INSERT INTO `dimension_date`(`year`, `season`, `month`, `week`, `day`, `type`, `calendar`) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        return new String[]{querySql, insertSql};
+        return new String[] { querySql, insertSql };
     }
 
     /**
@@ -177,7 +186,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildPlatformSql() {
         String querySql = "SELECT `id` FROM `dimension_platform` WHERE `platform_name` = ?";
         String insertSql = "INSERT INTO `dimension_platform`(`platform_name`) VALUES(?)";
-        return new String[]{querySql, insertSql};
+        return new String[] { querySql, insertSql };
     }
 
     /**
@@ -188,7 +197,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildBrowserSql() {
         String querySql = "SELECT `id` FROM `dimension_browser` WHERE `browser_name` = ? AND `browser_version` = ?";
         String insertSql = "INSERT INTO `dimension_browser`(`browser_name`, `browser_version`) VALUES(?, ?)";
-        return new String[]{querySql, insertSql};
+        return new String[] { querySql, insertSql };
     }
 
     /**
@@ -199,9 +208,19 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildKpiSql() {
         String querySql = "SELECT `id` FROM `dimension_kpi` WHERE `kpi_name` = ?";
         String insertSql = "INSERT INTO `dimension_kpi`(`kpi_name`) VALUES(?)";
-        return new String[]{querySql, insertSql};
+        return new String[] { querySql, insertSql };
     }
 
+    /**
+     * 创建location dimension相关sql
+     *
+     * @return
+     */
+    private String[] buildLocationSql() {
+        String querySql = "SELECT `id` FROM `dimension_location` WHERE `country` = ? AND `province` = ? AND `city` = ?";
+        String insertSql = "INSERT INTO `dimension_location`(`country`,`province`,`city`) VALUES(?,?,?)";
+        return new String[] { querySql, insertSql };
+    }
 
     /**
      * 具体执行sql的方法

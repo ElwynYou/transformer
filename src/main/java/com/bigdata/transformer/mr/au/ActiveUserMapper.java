@@ -39,7 +39,7 @@ public class ActiveUserMapper extends TransformerBaseMapper<StatsUserDimension, 
         String uuid = super.getUuid(value);
 
         String platform = super.getPlatform(value);
-        String serverTime = super.getSeverTime(value);
+        String serverTime = this.getServerTime(value);
 
         // 过滤无效数据
         if (StringUtils.isBlank(uuid) || StringUtils.isBlank(platform) || StringUtils.isBlank(serverTime) || !StringUtils.isNumeric(serverTime.trim())) {

@@ -1,11 +1,9 @@
 package com.bigdata.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import com.bigdata.common.GlobalConstants;
 import org.apache.hadoop.conf.Configuration;
+
+import java.sql.*;
 
 
 /**
@@ -41,5 +39,37 @@ public class JdbcManager {
             // nothing
         }
         return DriverManager.getConnection(url, username, password);
+    }
+
+
+    /**
+     * 关闭数据库连接
+     *
+     * @param conn
+     * @param stmt
+     * @param rs
+     */
+    public static void close(Connection conn, Statement stmt, ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                // nothing
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                // nothing
+            }
+        }
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                // nothing
+            }
+        }
     }
 }
