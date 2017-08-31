@@ -1,7 +1,8 @@
-package com.bigdata.transformer.service.impl;
+package com.bigdata.transformer.service.rpc.server;
 
 import com.bigdata.transformer.model.dim.base.*;
-import com.bigdata.transformer.service.IDimensionConverter;
+import com.bigdata.transformer.service.rpc.IDimensionConverter;
+import org.apache.hadoop.ipc.ProtocolSignature;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
      * @param dimension
      * @return
      */
-    private String buildCacheKey(BaseDimension dimension) {
+    public static String buildCacheKey(BaseDimension dimension) {
         StringBuilder sb = new StringBuilder();
         if (dimension instanceof DateDimension) {
             sb.append("date_dimension");
@@ -270,5 +271,15 @@ public class DimensionConverterImpl implements IDimensionConverter {
             }
         }
         throw new RuntimeException("从数据库获取id失败");
+    }
+
+    @Override
+    public long getProtocolVersion(String s, long l) throws IOException {
+        return IDimensionConverter.versionId;
+    }
+
+    @Override
+    public ProtocolSignature getProtocolSignature(String s, long l, int i) throws IOException {
+        return null;
     }
 }
