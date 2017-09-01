@@ -13,7 +13,7 @@ import java.io.IOException;
  * @Email elonyong@163.com
  */
 public interface IDimensionConverter extends VersionedProtocol {
-     long versionId=1;
+     long versionID=1;
     /**
      * 根据dimension的value值获取id
      * 如果数据库中有,直接返回.没有-插入后返回新的id值

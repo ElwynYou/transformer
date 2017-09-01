@@ -41,7 +41,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
 
     @Override
     public int getDimensionIdByValue(BaseDimension dimension) throws IOException {
-        String cacheKey = this.buildCacheKey(dimension); // 获取cache key
+        String cacheKey = DimensionConverterImpl.buildCacheKey(dimension); // 获取cache key
         if (this.cache.containsKey(cacheKey)) {
             return this.cache.get(cacheKey);
         }
@@ -274,12 +274,12 @@ public class DimensionConverterImpl implements IDimensionConverter {
     }
 
     @Override
-    public long getProtocolVersion(String s, long l) throws IOException {
-        return IDimensionConverter.versionId;
+    public long getProtocolVersion(String protocol, long clientVersion) throws IOException {
+        return IDimensionConverter.versionID;
     }
 
     @Override
-    public ProtocolSignature getProtocolSignature(String s, long l, int i) throws IOException {
+    public ProtocolSignature getProtocolSignature(String protocol, long clientVersion, int clientMethodsHash) throws IOException {
         return null;
     }
 }
